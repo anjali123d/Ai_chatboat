@@ -1,0 +1,15 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 10px;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a, #2c2c2c);
+    color: white;
+    /* text color for contrast */
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
