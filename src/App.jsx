@@ -146,7 +146,7 @@ function App() {
           </div>
 
         </div>
-        <p style={{textAlign:'center',padding:'10px'}}>Developed by Anjali</p>
+        <p style={{ textAlign: 'center', padding: '10px' }}>Developed by Anjali Bambhaniya</p>
 
       </footer>
     </div>
