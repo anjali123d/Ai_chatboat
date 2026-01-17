@@ -23,7 +23,7 @@ body {
 
 /* Header */
 .chat-header {
-    width:100%;
+    width: 100%;
     border-bottom: 1px solid #27272a;
     padding: 1rem 0rem;
     backdrop-filter: blur(10px);
@@ -444,6 +444,25 @@ body {
     justify-content: center;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    font-size: 20px;
+    margin: 2px;
+}
+
+.mic-button {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin: 2px;
+    font-size: 20px;
 }
 
 .send-button:hover:not(:disabled) {
@@ -496,6 +515,104 @@ body {
     .suggestions button {
         max-width: none;
     }
+
+    .input-container {
+        max-width: 100%;
+    }
+
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        gap: 0rem;
+    }
+
+    .input-wrapper input {
+        flex: 1;
+        background-color: transparent;
+        border-radius: 50px;
+        padding: 0.3rem 0.5rem;
+        color: #ffffff;
+        font-size: 0.8rem;
+        outline: none;
+        transition: all 0.2s ease;
+        border: none;
+    }
+
+    .input-wrapper input:focus {
+        outline: none;
+    }
+
+    .input-wrapper input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .input-wrapper input::placeholder {
+        color: #71717a;
+    }
+
+    .input-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .send-button {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        font-size: 10px;
+        margin: 2px;
+    }
+
+    .mic-button {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        font-size: 10px;
+        margin: 2px;
+    }
+
+    /* Footer with input */
+    .chat-footer {
+
+        padding: 1.5rem;
+    }
+
+    .input-container {
+
+        padding: 5px;
+        border-radius: 50px;
+        margin: 0 auto;
+        background: #27272a;
+
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        gap: 0.75rem;
+    }
+
+
 }
 
 @media (max-width: 480px) {

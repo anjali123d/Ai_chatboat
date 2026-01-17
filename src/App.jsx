@@ -2,13 +2,19 @@ import { useState, useRef, useEffect } from "react";
 import { generateContent } from "./services/geminiApi";
 import "./App.css";
 import AiMessage from "./AiMessage";
-
+import { FaMicrophone } from "react-icons/fa";
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+import { IoSend } from "react-icons/io5";
+import { FaCircleUser } from "react-icons/fa6";
+import { TbRobotFace } from "react-icons/tb";
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -22,6 +28,47 @@ function App() {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+  useEffect(() => {
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = "en-IN"; // English India (Gujarati mate "gu-IN" try kari shako)
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+  }, []);
+  const startListening = () => {
+    if (!recognitionRef.current) return;
+    setIsListening(true);
+    recognitionRef.current.start();
+  };
+
+  const stopListening = () => {
+    recognitionRef.current.stop();
+    setIsListening(false);
+  };
+
+  const speakText = (text) => {
+    if (!window.speechSynthesis) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-IN"; // Gujarati mate: "gu-IN"
+    utterance.rate = 1;      // speed (0.8 slow, 1 normal, 1.2 fast)
+    utterance.pitch = 1;     // voice pitch
+
+    window.speechSynthesis.cancel(); // previous voice stop
+    window.speechSynthesis.speak(utterance);
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -40,6 +87,7 @@ function App() {
 
       // ✅ Direct AI message (NO typing effect)
       setMessages(prev => [...prev, { role: "ai", text: aiText }]);
+      speakText(aiText);
     } catch (err) {
       setMessages(prev => [
         ...prev,
@@ -89,7 +137,7 @@ function App() {
             {messages.map((msg, index) => (
               <div key={index} className={`message-wrapper ${msg.role}`}>
                 <div className="message-avatar">
-                  {msg.role === "ai" ? "🤖" : "👤"}
+                  {msg.role === "ai" ? <TbRobotFace /> : <FaCircleUser />}
                 </div>
                 <div className="message-content">
                   {msg.role === "ai" ? (
@@ -136,12 +184,23 @@ function App() {
             />
             <div className="input-actions">
               <button
+                className={`mic-button ${isListening ? "active" : ""}`}
+                onClick={isListening ? stopListening : startListening}
+                disabled={loading}
+              >
+                <FaMicrophone />
+              </button>
+              <button
                 className="send-button"
                 onClick={handleSend}
                 disabled={loading || !input.trim()}
               >
-                <span className="send-icon">➤</span>
+
+                <IoSend />
+
               </button>
+
+
             </div>
           </div>
 
