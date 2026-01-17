@@ -21,3 +21,5 @@ export const generateContent = async (prompt) => {
     const data = await res.json();
     return data;
 };
+
+

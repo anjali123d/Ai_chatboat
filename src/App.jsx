@@ -7,6 +7,8 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 import { IoSend } from "react-icons/io5";
 import { FaCircleUser } from "react-icons/fa6";
 import { TbRobotFace } from "react-icons/tb";
+import { generateImage } from "./services/imageApi";
+
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -19,6 +21,9 @@ function App() {
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  const isImagePrompt = (text) => {
+    return text.toLowerCase().startsWith("generate image");
   };
 
   useEffect(() => {
@@ -58,15 +63,39 @@ function App() {
     setIsListening(false);
   };
 
+  const cleanTextForSpeech = (text) => {
+    return text
+      // remove code blocks
+      .replace(/```[\s\S]*?```/g, " ")
+      // remove inline code
+      .replace(/`([^`]+)`/g, "$1")
+      // remove markdown headings
+      .replace(/#+\s?/g, "")
+      // remove bold / italic
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .replace(/\*(.*?)\*/g, "$1")
+      // remove links
+      .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+      // remove list markers
+      .replace(/^\s*[-•]\s+/gm, "")
+      // remove extra symbols
+      .replace(/[_>#]/g, "")
+      // normalize spaces
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
   const speakText = (text) => {
     if (!window.speechSynthesis) return;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-IN"; // Gujarati mate: "gu-IN"
-    utterance.rate = 1;      // speed (0.8 slow, 1 normal, 1.2 fast)
-    utterance.pitch = 1;     // voice pitch
+    const cleanedText = cleanTextForSpeech(text);
 
-    window.speechSynthesis.cancel(); // previous voice stop
+    const utterance = new SpeechSynthesisUtterance(cleanedText);
+    utterance.lang = "en-IN"; // gu-IN for Gujarati
+    utterance.rate = 1;
+    utterance.pitch = 1;
+
+    window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   };
 
@@ -76,27 +105,60 @@ function App() {
     const userText = input;
     setInput("");
 
-    setMessages(prev => [...prev, { role: "user", text: userText }]);
+    // User message
+    setMessages(prev => [
+      ...prev,
+      { role: "user", type: "text", text: userText }
+    ]);
+    
     setLoading(true);
 
     try {
-      const response = await generateContent(userText);
-      const aiText =
-        response.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "No response";
+      // 🖼️ IMAGE PROMPT
+      if (isImagePrompt(userText)) {
+        const imageUrl = await generateImage(userText);
 
-      // ✅ Direct AI message (NO typing effect)
-      setMessages(prev => [...prev, { role: "ai", text: aiText }]);
-      speakText(aiText);
+        setMessages(prev => [
+          ...prev,
+          {
+            role: "ai",
+            type: "image",
+            imageUrl,
+            text: userText
+          }
+        ]);
+
+        speakText("Here is the generated image");
+      }
+      // 💬 TEXT PROMPT
+      else {
+        const response = await generateContent(userText);
+
+        const aiText =
+          response.candidates?.[0]?.content?.parts?.[0]?.text ||
+          "No response";
+
+        setMessages(prev => [
+          ...prev,
+          { role: "ai", type: "text", text: aiText }
+        ]);
+
+        speakText(aiText);
+      }
     } catch (err) {
       setMessages(prev => [
         ...prev,
-        { role: "ai", text: "Sorry, something went wrong." }
+        {
+          role: "ai",
+          type: "text",
+          text: "Sorry, something went wrong."
+        }
       ]);
     }
 
     setLoading(false);
   };
+
 
 
 
@@ -126,7 +188,9 @@ function App() {
         <div className="chat-container">
           {messages.length === 0 && (
             <div className="welcome-screen">
-              <div className="welcome-icon">🤖</div>
+              <div className="welcome-icon">
+                <TbRobotFace />
+              </div>
               <h2>Hello! I'm Gemini AI</h2>
               <p>Ask me anything! I can help with coding, explanations, creative writing, and more.</p>
 
@@ -139,22 +203,40 @@ function App() {
                 <div className="message-avatar">
                   {msg.role === "ai" ? <TbRobotFace /> : <FaCircleUser />}
                 </div>
+
                 <div className="message-content">
-                  {msg.role === "ai" ? (
+                  {msg.type === "image" ? (
+                    <div className="ai-image-message">
+                      <img
+                        src={msg.imageUrl}
+                        alt="AI Generated"
+                        style={{ maxWidth: "100%", borderRadius: "12px" }}
+                      />
+                      <p>{msg.text}</p>
+                    </div>
+                  ) : msg.role === "ai" ? (
                     <AiMessage text={msg.text} />
                   ) : (
                     <div className="user-message">{msg.text}</div>
                   )}
+
                   <div className="message-time">
-                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date().toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </div>
                 </div>
+
+
               </div>
             ))}
 
             {loading && (
               <div className="message-wrapper ai typing">
-                <div className="message-avatar">🤖</div>
+                <div className="message-avatar">
+                  <TbRobotFace />
+                </div>
                 <div className="message-content">
                   <div className="typing-indicator">
                     <span></span>
