@@ -493,142 +493,146 @@ body {
     opacity: 0.7;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .chat-main {
-        padding: 1rem;
-    }
+/* =========================
+   GLOBAL MOBILE FIXES
+========================= */
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
 
-    .message-content {
-        max-width: 85%;
-    }
+.chat-app {
+    height: 100dvh;
+    /* Fix mobile viewport jump */
+}
 
-    .welcome-screen {
-        padding: 1rem;
-    }
-
-    .suggestions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .suggestions button {
-        max-width: none;
-    }
-
-    .input-container {
+/* =========================
+   TABLET (≤1024px)
+========================= */
+@media (max-width: 1024px) {
+    .chat-app {
         max-width: 100%;
     }
 
-
-    .input-wrapper {
-        position: relative;
-        display: flex;
-        gap: 0rem;
-    }
-
-    .input-wrapper input {
-        flex: 1;
-        background-color: transparent;
-        border-radius: 50px;
-        padding: 0.3rem 0.5rem;
-        color: #ffffff;
-        font-size: 0.8rem;
-        outline: none;
-        transition: all 0.2s ease;
-        border: none;
-    }
-
-    .input-wrapper input:focus {
-        outline: none;
-    }
-
-    .input-wrapper input:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .input-wrapper input::placeholder {
-        color: #71717a;
-    }
-
-    .input-actions {
-        display: flex;
-        align-items: center;
-    }
-
-    .send-button {
-        width: 30px;
-        height: 30px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        border: none;
-        border-radius: 50%;
-        color: white;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-        font-size: 10px;
-        margin: 2px;
-    }
-
-    .mic-button {
-        width: 30px;
-        height: 30px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        border: none;
-        border-radius: 50%;
-        color: white;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-        font-size: 10px;
-        margin: 2px;
-    }
-
-    /* Footer with input */
-    .chat-footer {
-
-        padding: 1.5rem;
+    .message-content {
+        max-width: 80%;
     }
 
     .input-container {
-
-        padding: 5px;
-        border-radius: 50px;
-        margin: 0 auto;
-        background: #27272a;
-
+        max-width: 70%;
     }
-
-    .input-wrapper {
-        position: relative;
-        display: flex;
-        gap: 0.75rem;
-    }
-
-
 }
 
-@media (max-width: 480px) {
+/* =========================
+   MOBILE (≤768px)
+========================= */
+@media (max-width: 768px) {
+
+    /* Header */
     .chat-header {
         padding: 0.75rem 1rem;
     }
 
     .logo h1 {
-        font-size: 1.125rem;
+        font-size: 1rem;
     }
 
+    .status {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Chat area */
+    .chat-main {
+        padding: 0.75rem;
+    }
+
+    .chat-messages {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    /* Messages */
     .message-content {
         max-width: 90%;
     }
 
+    .message-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+
+    .user-message,
+    .message-wrapper.ai .message-content {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* Footer input */
     .chat-footer {
-        padding: 1rem;
+        padding: 0.75rem;
+    }
+
+    .input-container {
+        max-width: 100%;
+        padding: 6px;
+    }
+
+    .input-wrapper {
+        gap: 0.25rem;
+    }
+
+    .input-wrapper input {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .send-button,
+    .mic-button {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}
+
+/* =========================
+   SMALL MOBILE (≤480px)
+========================= */
+@media (max-width: 480px) {
+
+    .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+
+    .welcome-screen h2 {
+        font-size: 1.3rem;
+    }
+
+    .welcome-screen p {
+        font-size: 0.85rem;
+    }
+
+    .suggestions button {
+        font-size: 0.8rem;
+        padding: 0.6rem;
+    }
+
+    .message-content {
+        max-width: 95%;
+    }
+
+    .input-wrapper input {
+        font-size: 0.75rem;
+    }
+
+    .send-button,
+    .mic-button {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
     }
 }
